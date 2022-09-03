@@ -40,7 +40,7 @@ app.use('/api/products', require('./routes/productRoutes'))
 app.use('/api/carts', require('./routes/cartRoutes'))
 
 // Order Routes
-app.use('/api/orders', require('./routes/orderRoutes'))
+app.use('/api/orders', require('./routes/orderRoutes'));
 
 
 
