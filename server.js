@@ -37,7 +37,7 @@ app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/products', require('./routes/productRoutes'))
 
 // Cart Routes
-app.use('/api/carts', require('./routes/cartRoutes'))
+app.use('/api/carts', require('./routes/cartRoutes'));
 
 // Order Routes
 app.use('/api/orders', require('./routes/orderRoutes'));
