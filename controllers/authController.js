@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler')
 const CryptoJS = require('crypto-js')
-const jwt = require('jsonwebtoken')
 
 // User Model
 const User = require('../models/User');
+const { generateToken } = require('../middleware/authMiddleware');
 
 // Create User
 const registerUser = asyncHandler(async (req, res) => {
@@ -20,18 +20,11 @@ const registerUser = asyncHandler(async (req, res) => {
     // Saving user in database
     try {
         const savedUser = await newUser.save();
-        const accessToken = jwt.sign(
-            {
-                id: savedUser._id,
-                isAdmin: savedUser.isAdmin,
-            },
-            process.env.JWT_SECRET,
-            {expiresIn: '3d'}
-        )
 
         const { ...others } = savedUser._doc;
 
-        res.status(200).json({ ...others, accessToken })
+        // Sending the following if status code == 200
+        res.status(200).json({ ...others, accessToken: generateToken(savedUser) })
     } 
     catch (error) {
         res.status(500).json(error)
@@ -58,21 +51,10 @@ const loginUser = asyncHandler(async (req, res) => {
         // If after decrypting the password but doesn't match the inputed password return this
         decryptPassword !== req.body.password && res.status(401).json({message: "Wrong credentials"})
 
-        // creating|generating access token for user 
-        const accessToken = jwt.sign(
-            {
-                id: user._id,
-                isAdmin: user.isAdmin,
-            },
-            process.env.JWT_SECRET,
-            {expiresIn: '3d'}
-        )
-
-        // destructuring
         const { password, ...others } = user._doc; // ._doc is used with a document
 
         // If everything is correct return everything else except password
-        res.status(200).json({...others, accessToken})
+        res.status(200).json({...others, accessToken: generateToken(user)})
     } 
     catch (error) {
         res.status(500).json(error)

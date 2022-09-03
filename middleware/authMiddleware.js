@@ -1,6 +1,21 @@
 const jwt = require('jsonwebtoken')
 
 
+const generateToken = (user) => {
+  return jwt.sign(
+    {
+        id: user._id,
+        isAdmin: user.isAdmin,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '7d',
+    }
+  );
+};
+
+
+
 // verify token
 const verifyToken = (req, res, next) => {
     // Target requester header token
@@ -53,5 +68,6 @@ const authorizedAdminToken = (req, res, next) => {
 module.exports = {
     verifyToken,
     authorizedToken,
-    authorizedAdminToken
+    authorizedAdminToken,
+    generateToken
 }
